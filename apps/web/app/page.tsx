@@ -4,6 +4,14 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sparkles,
   MessageCircleHeart,
@@ -13,6 +21,32 @@ import {
   X,
 } from "lucide-react";
 
+function ModeToggle() {
+  const { setTheme } = useTheme()
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme("light")}>
+          Light
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
+          Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>
+          System
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 export default function ChitpiLandingPage() {
   const [open, setOpen] = React.useState(false);
 
@@ -20,7 +54,7 @@ export default function ChitpiLandingPage() {
     <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-950 overflow-hidden">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-slate-900/40 border-b border-white/30 dark:border-zinc-800/50">
+      <header className="sticky top-0 z-40 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 
           <h1 className="text-2xl font-extrabold">
@@ -30,11 +64,16 @@ export default function ChitpiLandingPage() {
           </h1>
 
           {/* desktop menu */}
-          <div className="hidden sm:flex gap-3 items-center">
+          <div className="hidden sm:flex gap-3 items-center p-1.5 bg-white backdrop-blur-none backdrop-opacity-10 backdrop-brightness-250 drop-shadow-md rounded-2xl border border-dashed border-gray-400">
+            <div>
+           { ModeToggle()}
+           </div>
+           
             <Button variant="ghost">Features</Button>
             <Button variant="ghost">Community</Button>
             <Button className="rounded-2xl">Login</Button>
           </div>
+
 
           {/* mobile hamburger */}
           <button
