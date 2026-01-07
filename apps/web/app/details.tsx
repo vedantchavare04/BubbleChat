@@ -28,7 +28,7 @@ function FeaturesCarousel() {
         ].map((item, index) => (
           <CarouselItem key={index} className="pt-1 md:basis-1/2">
             <div className="p-2">
-              <Card className="rounded-3xl border-0 bg-white/70 dark:bg-neutral-900/60 backdrop-blur-xl shadow-xl">
+              <Card className="rounded-3xl border-0 bg-white/70 dark:bg-neutral-800 backdrop-blur-xl shadow-xl">
                 <CardContent className="p-6 flex flex-col items-center justify-center gap-2">
                   <span className="text-4xl">{item.emoji}</span>
 

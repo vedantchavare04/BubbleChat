@@ -1,21 +1,18 @@
 "use client"
-
+import { Separator } from "@/components/ui/separator"
 import "./globals.css"
 import React from "react"
 import { motion, AnimatePresence } from "framer-motion"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Moon, Sun, Sparkles, MessageCircleHeart, Star, Send, Menu, X } from "lucide-react"
 import { useTheme } from "next-themes"
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 import {
   Dialog,
   DialogContent,
@@ -25,12 +22,53 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog"
-
 import { Input } from "@/components/ui/input"
-
 import Details from "./details"
 
 
+
+/* 🌈 BEAUTIFUL PASTEL BACKGROUND */
+function BackgroundLayout() {
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-10">
+
+      {/* mesh gradient base */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(167,243,208,0.35),transparent_40%),radial-gradient(ellipse_at_bottom_right,rgba(125,211,252,0.35),transparent_40%),radial-gradient(ellipse_at_top_right,rgba(253,230,138,0.35),transparent_40%)]" />
+
+      {/* soft aurora ribbons */}
+      <div className="absolute inset-0 blur-3xl opacity-80">
+        <div className="absolute w-[55vw] h-[30vh] -top-10 left-5 bg-emerald-200/40 rounded-full mix-blend-screen animate-pulse" />
+        <div className="absolute w-[65vw] h-[32vh] top-1/3 -right-5 bg-sky-200/40 rounded-full mix-blend-screen animate-pulse" />
+        <div className="absolute w-[60vw] h-[35vh] bottom-0 left-1/4 bg-amber-200/40 rounded-full mix-blend-screen animate-pulse" />
+      </div>
+
+      {/* dotted glass grid */}
+      <div className="absolute inset-0 opacity-40 dark:opacity-20 [mask-image:radial-gradient(circle_at_center,white,transparent)]">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#d4d4d41a_1px,transparent_1px),linear-gradient(to_bottom,#d4d4d41a_1px,transparent_1px)] bg-[size:32px_32px]" />
+      </div>
+
+      {/* floating light particles */}
+      {[...Array(18)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute w-2 h-2 rounded-full bg-white/70 dark:bg-white/20 blur-[1px] animate-ping"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${3 + Math.random() * 4}s`
+          }}
+        />
+      ))}
+
+      {/* film grain texture */}
+      <div className="absolute inset-0 opacity-[0.07] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+    </div>
+  )
+}
+
+
+
+/* 🌙 MODE TOGGLE */
 function ModeToggle() {
   const { setTheme } = useTheme()
 
@@ -53,11 +91,17 @@ function ModeToggle() {
   )
 }
 
+
+
+/* 🌟 MAIN PAGE */
 export default function ChitpiLandingPage() {
   const [open, setOpen] = React.useState(false)
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 dark:from-neutral-800 dark:via-neutral-800 dark:to-neutral-800 overflow-hidden">
+    <div className="min-h-screen w-full overflow-hidden">
+
+      {/* 🔥 NEW BEAUTIFUL BACKGROUND */}
+      <BackgroundLayout />
 
       {/* NAVBAR */}
       <header className="fixed top-0 left-0 w-full z-40 bg-transparent">
@@ -71,23 +115,23 @@ export default function ChitpiLandingPage() {
           {/* DESKTOP MENU */}
           <div
             className="hidden sm:flex gap-3 items-center p-1.5 
-            bg-white dark:bg-neutral-900 
+            bg-white/70 dark:bg-neutral-900/70
+            backdrop-blur-xl
             drop-shadow-md rounded-2xl 
             border border-dashed 
             border-gray-400 dark:border-neutral-700"
           >
             <ModeToggle />
-
             <Button variant="ghost">Features</Button>
             <Button variant="ghost">Community</Button>
 
-            {/* LOGIN WITH DIALOG */}
+            {/* LOGIN */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="rounded-2xl">Login</Button>
               </DialogTrigger>
 
-              <DialogContent className="rounded-2xl">
+              <DialogContent className="rounded-2xl backdrop-blur-2xl">
                 <DialogHeader>
                   <DialogTitle>Login</DialogTitle>
                   <DialogDescription>
@@ -117,7 +161,7 @@ export default function ChitpiLandingPage() {
           {/* MOBILE MENU BUTTON */}
           <button
             onClick={() => setOpen(!open)}
-            className="sm:hidden rounded-xl border p-2 border-zinc-300 dark:border-zinc-700"
+            className="sm:hidden rounded-xl border p-2 border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-black/40 backdrop-blur"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -130,14 +174,13 @@ export default function ChitpiLandingPage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="sm:hidden overflow-hidden border-t border-white/30 dark:border-zinc-800/50"
+              className="sm:hidden overflow-hidden border-t border-white/30 dark:border-zinc-800/50 bg-white/50 dark:bg-black/40 backdrop-blur-xl"
             >
               <div className="px-4 pb-4 pt-2 flex flex-col gap-2">
                 <ModeToggle />
                 <Button variant="ghost" className="w-full">Features</Button>
                 <Button variant="ghost" className="w-full">Community</Button>
 
-                {/* MOBILE LOGIN */}
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button className="rounded-2xl w-full">Login</Button>
@@ -151,18 +194,6 @@ export default function ChitpiLandingPage() {
                       </DialogDescription>
                     </DialogHeader>
 
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium">Email</label>
-                        <Input type="email" placeholder="you@example.com" />
-                      </div>
-
-                      <div>
-                        <label className="text-sm font-medium">Password</label>
-                        <Input type="password" placeholder="••••••••" />
-                      </div>
-                    </div>
-
                     <DialogFooter>
                       <Button className="w-full rounded-2xl">Login</Button>
                     </DialogFooter>
@@ -174,19 +205,14 @@ export default function ChitpiLandingPage() {
         </AnimatePresence>
       </header>
 
-      {/* BACKGROUND BLOBS */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute w-40 h-40 sm:w-72 sm:h-72 bg-emerald-200/40 blur-3xl rounded-full -top-6 -left-6 animate-pulse" />
-        <div className="absolute w-48 h-48 sm:w-96 sm:h-96 bg-sky-200/40 blur-3xl rounded-full bottom-0 right-0 animate-pulse" />
-        <div className="absolute w-40 h-40 sm:w-80 sm:h-80 bg-amber-200/40 blur-3xl rounded-full top-1/3 left-1/3 animate-pulse" />
-      </div>
 
       {/* MAIN CONTENT */}
       <main className="relative mx-auto max-w-6xl px-4 py-10 sm:py-20 pt-24">
 
         {/* HERO */}
         <section className="grid md:grid-cols-2 gap-10 items-center">
-          {/* LEFT HERO TEXT */}
+
+          {/* TEXT */}
           <div className="text-center md:text-left">
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-black leading-tight">
               Soft Pastel
@@ -214,13 +240,13 @@ export default function ChitpiLandingPage() {
             </div>
           </div>
 
-          {/* HERO MOCK CHAT */}
+          {/* MOCK UI CARD */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="relative"
           >
-            <Card className="rounded-3xl shadow-2xl bg-white/80 dark:bg-slate-800 backdrop-blur-xl">
+            <Card className="rounded-3xl shadow-2xl bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <MessageCircleHeart className="text-emerald-400" />
@@ -243,7 +269,7 @@ export default function ChitpiLandingPage() {
           </motion.div>
         </section>
 
-        {/* ⭐⭐⭐ MIDDLE FEATURE CARDS (RESTORED) ⭐⭐⭐ */}
+        {/* MIDDLE FEATURE CARDS */}
         <section className="mt-16 sm:mt-24 grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {["Create Rooms", "Meet People", "Chat in Real-time"].map((label, i) => (
             <motion.div
@@ -252,7 +278,7 @@ export default function ChitpiLandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * i }}
             >
-              <Card className="rounded-3xl shadow-xl bg-white/80 dark:bg-slate-800">
+              <Card className="rounded-3xl shadow-xl bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl">
                 <CardContent className="p-6">
                   <h3 className="font-bold text-xl mb-2">{label}</h3>
                   <p className="text-zinc-600 dark:text-zinc-400">
@@ -263,9 +289,11 @@ export default function ChitpiLandingPage() {
             </motion.div>
           ))}
         </section>
-      </main>
 
-      {/* DETAILS SECTION BELOW */}
+      </main>
+      <div className="mt-14 sm:mt-20 flex justify-center">
+        <Separator className="w-full max-w-5xl opacity-70" />
+      </div>
       <Details />
 
       <footer className="text-center py-8 text-sm text-zinc-600 dark:text-zinc-400">
