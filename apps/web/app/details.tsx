@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Card, CardContent } from "@/components/ui/card"
-
 import {
   Carousel,
   CarouselContent,
@@ -10,8 +9,25 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import {
+  EyeIcon,
+  AiBeautifyIcon,
+  Chatting01Icon,
+  UserCircleIcon,
+  Shield01Icon,
+} from "hugeicons-react"
 
+/* feature carousel */
 function FeaturesCarousel() {
+
+  const features = [
+    { label: "Aesthetic Pastel UI", icon: AiBeautifyIcon },
+    { label: "Public & Private Rooms", icon: EyeIcon },
+    { label: "Realtime Messaging", icon: Chatting01Icon },
+    { label: "Custom Avatars", icon: UserCircleIcon },
+    { label: "Secure Conversations", icon: Shield01Icon },
+  ]
+
   return (
     <Carousel
       orientation="vertical"
@@ -19,36 +35,42 @@ function FeaturesCarousel() {
       className="w-full max-w-sm mx-auto"
     >
       <CarouselContent className="-mt-1 h-[260px] sm:h-[320px]">
-        {[
-          { emoji: "🌈", label: "Aesthetic Pastel UI" },
-          { emoji: "👥", label: "Public & Private Rooms" },
-          { emoji: "⚡", label: "Realtime Messaging" },
-          { emoji: "🎭", label: "Custom Avatars" },
-          { emoji: "🔒", label: "Secure Conversations" },
-        ].map((item, index) => (
-          <CarouselItem key={index} className="pt-1 md:basis-1/2">
-            <div className="p-2">
-              <Card className="rounded-3xl border-0 bg-white/70 dark:bg-neutral-800 backdrop-blur-xl shadow-xl">
-                <CardContent className="p-6 flex flex-col items-center justify-center gap-2">
-                  <span className="text-4xl">{item.emoji}</span>
 
-                  <p className="font-semibold text-lg text-center">
-                    {item.label}
-                  </p>
+        {features.map((item, index) => {
+          const Icon = item.icon
 
-                  <p className="text-sm text-muted-foreground text-center">
-                    Smooth animations • Cozy vibes • Soft gradients
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
+          return (
+            <CarouselItem key={index} className="pt-1 md:basis-1/2">
+              <div className="p-2">
+
+                <Card className="rounded-3xl border-0 bg-white/70 dark:bg-neutral-800/80 backdrop-blur-xl shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
+                  <CardContent className="p-6 flex flex-col items-center justify-center gap-4">
+
+                    {/* icons */}
+                    <div className="p-4 rounded-2xl bg-gradient-to-br">
+                      <Icon className="w-10 h-10 text-emerald-600 dark:text-emerald-300" />
+                    </div>
+
+                    <p className="font-semibold text-lg text-center">
+                      {item.label}
+                    </p>
+
+                    <p className="text-sm text-muted-foreground text-center">
+                      Smooth animations • Cozy vibes • Soft gradients
+                    </p>
+
+                  </CardContent>
+                </Card>
+
+              </div>
+            </CarouselItem>
+          )
+        })}
+
       </CarouselContent>
 
-    <CarouselPrevious className="left-1/2 -translate-x-1/2 -top-4 rotate-90"/>
-
-    <CarouselNext className="left-1/2 -translate-x-1/2 -bottom-4 rotate-90"/>
+      <CarouselPrevious className="left-1/2 -translate-x-1/2 -top-4 rotate-90" />
+      <CarouselNext className="left-1/2 -translate-x-1/2 -bottom-4 rotate-90" />
 
     </Carousel>
   )
@@ -60,12 +82,12 @@ export default function Details() {
 
       <div className="grid md:grid-cols-2 gap-10 items-center">
 
-        {/* text content */}
+        {/* TEXT SIDE */}
         <div className="space-y-4 text-center md:text-left">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-black leading-tight">
             Various chatrooms
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-sky-500 to-amber-500">
+            <span className="text-transparent bg-clip-text  bg-emerald-500">
               bubbles to explore
             </span>
           </h2>
@@ -80,6 +102,7 @@ export default function Details() {
         <div className="flex justify-center">
           <FeaturesCarousel />
         </div>
+
       </div>
     </section>
   )

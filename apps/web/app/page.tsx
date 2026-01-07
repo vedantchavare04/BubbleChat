@@ -27,7 +27,7 @@ import Details from "./details"
 
 
 
-/* 🌈 BEAUTIFUL PASTEL BACKGROUND */
+/* layout background */
 function BackgroundLayout() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10">
@@ -47,19 +47,6 @@ function BackgroundLayout() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#d4d4d41a_1px,transparent_1px),linear-gradient(to_bottom,#d4d4d41a_1px,transparent_1px)] bg-[size:32px_32px]" />
       </div>
 
-      {/* floating light particles */}
-      {[...Array(18)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-2 h-2 rounded-full bg-white/70 dark:bg-white/20 blur-[1px] animate-ping"
-          style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            animationDuration: `${3 + Math.random() * 4}s`
-          }}
-        />
-      ))}
-
       {/* film grain texture */}
       <div className="absolute inset-0 opacity-[0.07] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
     </div>
@@ -68,7 +55,7 @@ function BackgroundLayout() {
 
 
 
-/* 🌙 MODE TOGGLE */
+/* mode toggle */
 function ModeToggle() {
   const { setTheme } = useTheme()
 
@@ -91,19 +78,17 @@ function ModeToggle() {
   )
 }
 
-
-
-/* 🌟 MAIN PAGE */
+/* main page */
 export default function ChitpiLandingPage() {
   const [open, setOpen] = React.useState(false)
 
   return (
     <div className="min-h-screen w-full overflow-hidden">
 
-      {/* 🔥 NEW BEAUTIFUL BACKGROUND */}
+      {/* layout background */}
       <BackgroundLayout />
 
-      {/* NAVBAR */}
+      {/* navbar */}
       <header className="fixed top-0 left-0 w-full z-40 bg-transparent">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <h1 className="text-2xl font-extrabold">
@@ -112,7 +97,7 @@ export default function ChitpiLandingPage() {
             </span>
           </h1>
 
-          {/* DESKTOP MENU */}
+          {/*desktop menu */}
           <div
             className="hidden sm:flex gap-3 items-center p-1.5 
             bg-white/70 dark:bg-neutral-900/70
@@ -125,17 +110,17 @@ export default function ChitpiLandingPage() {
             <Button variant="ghost">Features</Button>
             <Button variant="ghost">Community</Button>
 
-            {/* LOGIN */}
+            {/* login or signup */}
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="rounded-2xl">Login</Button>
+                <Button className="rounded-2xl">Login/Signup</Button>
               </DialogTrigger>
 
               <DialogContent className="rounded-2xl backdrop-blur-2xl">
                 <DialogHeader>
-                  <DialogTitle>Login</DialogTitle>
+                  <DialogTitle>Login or Signup</DialogTitle>
                   <DialogDescription>
-                    Welcome back to BubbleChat ✨
+                    Welcome to BubbleChat
                   </DialogDescription>
                 </DialogHeader>
 
@@ -158,7 +143,7 @@ export default function ChitpiLandingPage() {
             </Dialog>
           </div>
 
-          {/* MOBILE MENU BUTTON */}
+          {/* mobile menu button */}
           <button
             onClick={() => setOpen(!open)}
             className="sm:hidden rounded-xl border p-2 border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-black/40 backdrop-blur"
@@ -167,7 +152,6 @@ export default function ChitpiLandingPage() {
           </button>
         </div>
 
-        {/* MOBILE DROPDOWN */}
         <AnimatePresence>
           {open && (
             <motion.div
@@ -190,7 +174,7 @@ export default function ChitpiLandingPage() {
                     <DialogHeader>
                       <DialogTitle>Login</DialogTitle>
                       <DialogDescription>
-                        Sign in to continue 🚀
+                        Sign in to continue
                       </DialogDescription>
                     </DialogHeader>
 
@@ -206,18 +190,15 @@ export default function ChitpiLandingPage() {
       </header>
 
 
-      {/* MAIN CONTENT */}
+      {/* main content */}
       <main className="relative mx-auto max-w-6xl px-4 py-10 sm:py-20 pt-24">
 
-        {/* HERO */}
         <section className="grid md:grid-cols-2 gap-10 items-center">
-
-          {/* TEXT */}
           <div className="text-center md:text-left">
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-black leading-tight">
               Soft Pastel
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-sky-500 to-amber-500">
+              <span className="text-transparent bg-clip-text bg-emerald-500 ">
                 Chat Rooms
               </span>
               <br />for Everyone
@@ -240,7 +221,7 @@ export default function ChitpiLandingPage() {
             </div>
           </div>
 
-          {/* MOCK UI CARD */}
+          {/* ui card */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -269,7 +250,7 @@ export default function ChitpiLandingPage() {
           </motion.div>
         </section>
 
-        {/* MIDDLE FEATURE CARDS */}
+        {/* tthree cards features */}
         <section className="mt-16 sm:mt-24 grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {["Create Rooms", "Meet People", "Chat in Real-time"].map((label, i) => (
             <motion.div
@@ -291,9 +272,22 @@ export default function ChitpiLandingPage() {
         </section>
 
       </main>
-      <div className="mt-14 sm:mt-20 flex justify-center">
-        <Separator className="w-full max-w-5xl opacity-70" />
+      {/* separator */}
+      <div className="my-16">
+        <svg
+          viewBox="0 0 400 40"
+          className="w-full opacity-70 dark:opacity-50">
+          <path
+            d="M0 20 Q 40 10 80 20 T 160 20 T 240 20 T 320 20 T 400 20"
+            className="fill-none stroke-emerald-400/60 dark:stroke-emerald-500/60"
+            strokeWidth="2"
+            vectorEffect="non-scaling-stroke"/>
+        </svg>
       </div>
+
+
+
+      {/* details section(carousel) */}
       <Details />
 
       <footer className="text-center py-8 text-sm text-zinc-600 dark:text-zinc-400">
