@@ -4,7 +4,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Sparkles, MessageCircleHeart, Star, Send, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
   DropdownMenu,
@@ -12,14 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sparkles,
-  MessageCircleHeart,
-  Star,
-  Send,
-  Menu,
-  X,
-} from "lucide-react";
+import Details from "./details";
 
 function ModeToggle() {
   const { setTheme } = useTheme()
@@ -32,16 +25,11 @@ function ModeToggle() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -51,29 +39,33 @@ export default function ChitpiLandingPage() {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 dark:from-slate-900 dark:via-slate-950 dark:to-emerald-950 overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 dark:from-neutral-800 dark:via-neutral-800 dark:to-slate-800 overflow-hidden">
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl">
+      {/* NAVBAR */}
+      <header className="fixed top-0 left-0 w-full z-40 bg-transparent backdrop-blur-none border-none">
+
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 
           <h1 className="text-2xl font-extrabold">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 via-sky-500 to-amber-500">
+            <span className="bg-clip-text text-transparent bg-sky-500">
               BubbleChat
             </span>
           </h1>
 
           {/* desktop menu */}
-          <div className="hidden sm:flex gap-3 items-center p-1.5 bg-white backdrop-blur-none backdrop-opacity-10 backdrop-brightness-250 drop-shadow-md rounded-2xl border border-dashed border-gray-400">
-            <div>
-           { ModeToggle()}
-           </div>
-           
+          <div
+            className="hidden sm:flex gap-3 items-center p-1.5 
+            bg-white dark:bg-neutral-900 
+            drop-shadow-md rounded-2xl 
+            border border-dashed 
+            border-gray-400 dark:border-neutral-700"
+          >
+            <ModeToggle />
+
             <Button variant="ghost">Features</Button>
             <Button variant="ghost">Community</Button>
             <Button className="rounded-2xl">Login</Button>
           </div>
-
 
           {/* mobile hamburger */}
           <button
@@ -94,6 +86,7 @@ export default function ChitpiLandingPage() {
               className="sm:hidden overflow-hidden border-t border-white/30 dark:border-zinc-800/50"
             >
               <div className="px-4 pb-4 pt-2 flex flex-col gap-2">
+                <ModeToggle />
                 <Button variant="ghost" className="w-full">Features</Button>
                 <Button variant="ghost" className="w-full">Community</Button>
                 <Button className="rounded-2xl w-full">Login</Button>
@@ -110,12 +103,11 @@ export default function ChitpiLandingPage() {
         <div className="absolute w-40 h-40 sm:w-80 sm:h-80 bg-amber-200/40 blur-3xl rounded-full top-1/3 left-1/3 animate-pulse" />
       </div>
 
-      {/* MAIN */}
-      <main className="relative mx-auto max-w-6xl px-4 py-10 sm:py-20">
+      {/* ADDED PADDING FOR FIXED NAVBAR */}
+      <main className="relative mx-auto max-w-6xl px-4 py-10 sm:py-20 pt-24">
 
         {/* HERO */}
         <section className="grid md:grid-cols-2 gap-10 items-center">
-
           <div className="text-center md:text-left">
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-black leading-tight">
               Soft Pastel
@@ -149,7 +141,7 @@ export default function ChitpiLandingPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="relative"
           >
-            <Card className="rounded-3xl shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
+            <Card className="rounded-3xl shadow-2xl bg-white/80 dark:bg-slate-800 backdrop-blur-xl">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <MessageCircleHeart className="text-emerald-400" />
@@ -172,7 +164,7 @@ export default function ChitpiLandingPage() {
           </motion.div>
         </section>
 
-        {/* FEATURES CARDS*/}
+        {/* FEATURES CARDS */}
         <section className="mt-16 sm:mt-24 grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {["Create Rooms", "Meet People", "Chat in Real-time"].map((label, i) => (
             <motion.div
@@ -181,7 +173,7 @@ export default function ChitpiLandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * i }}
             >
-              <Card className="rounded-3xl shadow-xl bg-white/80 dark:bg-slate-900/80">
+              <Card className="rounded-3xl shadow-xl bg-white/80 dark:bg-slate-800">
                 <CardContent className="p-6">
                   <h3 className="font-bold text-xl mb-2">{label}</h3>
                   <p className="text-zinc-600 dark:text-zinc-400">
@@ -193,6 +185,7 @@ export default function ChitpiLandingPage() {
           ))}
         </section>
       </main>
+      <Details />
 
       <footer className="text-center py-8 text-sm text-zinc-600 dark:text-zinc-400">
         © {new Date().getFullYear()} BubbleChat — pastel vibes, open to all
