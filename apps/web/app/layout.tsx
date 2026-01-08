@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider"
-import { SessionProvider } from "next-auth/react"
+import { Providers } from "./provider"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <SessionProvider>
+        <Providers>
         <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -35,7 +35,7 @@ export default function RootLayout({
           >
             {children}
           </ThemeProvider>
-          </SessionProvider>
+          </Providers>
       </body>
     </html>
   );
