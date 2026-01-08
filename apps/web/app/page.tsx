@@ -32,10 +32,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import Details from "./details"
-import MarqueeDemo from "./mover"
-import Footer from "./animated_footer"
-import Seperator from "./seperator"
+import Details from "../components/core_ui/details"
+import MarqueeDemo from "../components/core_ui/mover"
+import Footer from "../components/core_ui/animated_footer"
+import Seperator from "../components/core_ui/seperator"
 
 
 // background layout
@@ -82,7 +82,7 @@ function ModeToggle() {
   )
 }
 
-export default function ChitpiLandingPage() {
+export default function BubbleLandingPage() {
   const [open, setOpen] = React.useState(false)
 
   return (
