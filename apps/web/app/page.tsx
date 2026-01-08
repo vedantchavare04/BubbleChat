@@ -36,7 +36,7 @@ import Details from "../components/core_ui/details"
 import MarqueeDemo from "../components/core_ui/mover"
 import Footer from "../components/core_ui/animated_footer"
 import Seperator from "../components/core_ui/seperator"
-
+import GoogleIcon from "../components/core_ui/google_icon"
 
 // background layout
 function BackgroundLayout() {
@@ -103,13 +103,13 @@ export default function BubbleLandingPage() {
             </h1>
           </div>
 
-          {/* Desktop Menu */}
+          {/* desktop menu */}
           <div className="hidden sm:flex gap-3 items-center p-1.5 bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl rounded-2xl border border-dashed border-gray-400 dark:border-neutral-700">
             <ModeToggle />
             <Button variant="ghost">Features</Button>
             <Button variant="ghost">Community</Button>
 
-            {/* Login / Signup Dialog */}
+            {/* login/signup dialog */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="rounded-2xl">Login / Signup</Button>
@@ -136,10 +136,9 @@ export default function BubbleLandingPage() {
                 </div>
 
                 <DialogFooter className="flex flex-col gap-2">
-                  <Button
-                    className="w-full rounded-2xl"
-                    onClick={() => signIn("google")}
-                  >
+                  <Button className="w-full rounded-2xl"
+                    onClick={() => signIn("google")}>
+                      <GoogleIcon/>
                     Continue with Google
                   </Button>
 
@@ -152,23 +151,15 @@ export default function BubbleLandingPage() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="sm:hidden rounded-xl border p-2 border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-black/40 backdrop-blur"
-          >
+          <button onClick={() => setOpen(!open)} className="sm:hidden rounded-xl border p-2 border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-black/40 backdrop-blur">
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* mobile menu */}
         <AnimatePresence>
           {open && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="sm:hidden bg-white/50 dark:bg-black/40 backdrop-blur-xl"
-            >
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="sm:hidden bg-white/50 dark:bg-black/40 backdrop-blur-xl">
               <div className="px-4 py-4 flex flex-col gap-2">
                 <ModeToggle />
                 <Button variant="ghost">Features</Button>
@@ -188,10 +179,8 @@ export default function BubbleLandingPage() {
                     </DialogHeader>
 
                     <DialogFooter>
-                      <Button
-                        className="w-full rounded-2xl"
-                        onClick={() => signIn("google")}
-                      >
+                      <Button className="w-full rounded-2xl" onClick={() => signIn("google")}>
+                        <GoogleIcon/>
                         Continue with Google
                       </Button>
                     </DialogFooter>
@@ -232,11 +221,7 @@ export default function BubbleLandingPage() {
           </div>
 
           {/* cards */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative"
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative">
             <Card className="rounded-3xl shadow-2xl bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
