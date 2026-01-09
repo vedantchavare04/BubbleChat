@@ -21,6 +21,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel
 } from "@/components/ui/dropdown-menu"
 import {
   Dialog,
@@ -38,6 +40,57 @@ import Footer from "../components/core_ui/animated_footer"
 import Seperator from "../components/core_ui/seperator"
 import GoogleIcon from "../components/core_ui/google_icon"
 import BackgroundLayout from "../components/core_ui/background"
+import { LogOut, User, Settings } from "lucide-react"
+
+// profile dropdown
+function ProfileDropdown() {
+  const { data: session } = useSession()
+  if (!session) return null
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className="flex items-center justify-center rounded-full sm:rounded-2xl w-10 h-10 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 sm:gap-2 sm:border sm:border-dashed sm:bg-white/70 sm:dark:bg-neutral-900/70 sm:backdrop-blur-xl hover:shadow-md transition">
+          {session.user?.image ? (
+            <img src={session.user.image} alt="profile" className="h-9 w-9 rounded-full"/>
+          ) : (
+            <div className="h-9 w-9 rounded-full bg-emerald-400 flex items-center justify-center text-white text-sm font-bold">
+              {session.user?.name?.[0]}
+            </div>
+          )}
+
+          {/* Desktop only name */}
+          <span className="hidden sm:block text-sm font-medium">
+            {session.user?.name?.split(" ")[0]}
+          </span>
+        </button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end" className="w-52 rounded-2xl">
+        <DropdownMenuLabel className="text-xs text-muted-foreground">
+          Signed in as
+          <div className="font-medium text-sm text-foreground truncate">
+            {session.user?.email}
+          </div>
+        </DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          onClick={() => signOut()}
+          className="gap-2 cursor-pointer text-red-500 focus:text-red-500"
+        >
+          <LogOut size={16} />
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 
 // mode toggle
 function ModeToggle() {
@@ -92,10 +145,7 @@ export default function BubbleLandingPage() {
             <Button variant="ghost">Community</Button>
 
             {/* login/signup dialog */}
-           {session ? (
-            <Button variant="outline" className="rounded-2xl" onClick={() => signOut()}>
-              Logout
-            </Button>) : (
+           {session ? <ProfileDropdown /> : (
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="rounded-2xl">Login / Signup</Button>
@@ -119,8 +169,9 @@ export default function BubbleLandingPage() {
                     Continue
                   </Button>
                 </DialogFooter>
-              </DialogContent>
-            </Dialog>)}
+              </DialogContent>              
+            </Dialog>
+          )}
         </div>
 
           {/* Mobile Menu Button */}
@@ -139,30 +190,30 @@ export default function BubbleLandingPage() {
                 <Button variant="ghost">Community</Button>
 
                 {session ? (
-                  <Button variant="outline" className="rounded-2xl w-full" onClick={() => signOut()}>
-                    Logout
-                  </Button>) : (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button className="rounded-2xl w-full">Login</Button>
-                    </DialogTrigger>
-
-                    <DialogContent className="rounded-2xl">
-                      <DialogHeader>
-                        <DialogTitle>Login or Signup</DialogTitle>
-                        <DialogDescription>
+                    <ProfileDropdown />
+                  ) : (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="rounded-2xl w-full">Login</Button>
+                      </DialogTrigger>
+                                  <DialogContent className="rounded-2xl">
+                <DialogHeader>
+                    <DialogTitle>Login or Signup</DialogTitle>
+                      <DialogDescription>
                           Welcome to BubbleChat
-                        </DialogDescription>
-                      </DialogHeader>
+                      </DialogDescription>
+                    </DialogHeader>
 
-                      <DialogFooter>
-                        <Button className="w-full rounded-2xl" onClick={() => signIn("google")}>
-                          <GoogleIcon />
+                  <DialogFooter>
+                    <Button className="w-full rounded-2xl" onClick={() => signIn("google")}>
+                      <GoogleIcon />
                           Continue with Google
-                        </Button>
+                      </Button>
                       </DialogFooter>
                     </DialogContent>
-                  </Dialog>)}
+                    </Dialog>
+                  )}
+
             </div>
             </motion.div>
           )}
