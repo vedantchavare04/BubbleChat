@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/dialog"
 import GoogleIcon from "./google_icon"
 import { LogOut } from "lucide-react"
+import { useRouter } from "next/navigation"
+
 
 // profile dropdown
 function ProfileDropdown() {
@@ -68,10 +70,7 @@ function ProfileDropdown() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          onClick={() => signOut()}
-          className="gap-2 cursor-pointer text-red-500 focus:text-red-500"
-        >
+        <DropdownMenuItem onClick={() => signOut()} className="gap-2 cursor-pointer text-red-500 focus:text-red-500">
           <LogOut size={16} />
           Logout
         </DropdownMenuItem>
@@ -107,6 +106,7 @@ function ModeToggle() {
 export default function Navbar() {
   const [open, setOpen] = React.useState(false)
   const { data: session } = useSession()
+  const router = useRouter()
 
   return (
           <header className="fixed top-0 left-0 w-full z-40 bg-transparent">
@@ -125,7 +125,20 @@ export default function Navbar() {
               {/* desktop menu */}
               <div className="hidden sm:flex gap-3 items-center p-1.5 bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl rounded-2xl border border-dashed border-gray-400 dark:border-neutral-700">
                 <ModeToggle />
-                <Button variant="ghost">Features</Button>
+
+                <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">Features</Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end" className="w-52 rounded-2xl p-1">
+                    <DropdownMenuItem className="rounded-xl cursor-pointer" onClick={() => router.push("/chatrooms")} >
+                        Chatrooms
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+                </DropdownMenu>
+
+
                 <Button variant="ghost">Community</Button>
     
                 {/* login/signup dialog */}
