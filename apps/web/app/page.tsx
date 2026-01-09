@@ -15,7 +15,7 @@ import {
   X,
 } from "lucide-react"
 import { useTheme } from "next-themes"
-import { signIn } from "next-auth/react"
+import { signIn, signOut, useSession } from "next-auth/react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,6 +64,8 @@ function ModeToggle() {
 
 export default function BubbleLandingPage() {
   const [open, setOpen] = React.useState(false)
+  const { data: session, status } = useSession()
+
 
   return (
     <div className="min-h-screen w-full">
@@ -90,6 +92,10 @@ export default function BubbleLandingPage() {
             <Button variant="ghost">Community</Button>
 
             {/* login/signup dialog */}
+           {session ? (
+            <Button variant="outline" className="rounded-2xl" onClick={() => signOut()}>
+              Logout
+            </Button>) : (
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="rounded-2xl">Login / Signup</Button>
@@ -103,22 +109,9 @@ export default function BubbleLandingPage() {
                   </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium">Email</label>
-                    <Input type="email" placeholder="you@example.com" />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium">Password</label>
-                    <Input type="password" placeholder="••••••••" />
-                  </div>
-                </div>
-
                 <DialogFooter className="flex flex-col gap-2">
-                  <Button className="w-full rounded-2xl"
-                    onClick={() => signIn("google")}>
-                      <GoogleIcon/>
+                  <Button className="w-full rounded-2xl" onClick={() => signIn("google")}>
+                    <GoogleIcon />
                     Continue with Google
                   </Button>
 
@@ -127,8 +120,8 @@ export default function BubbleLandingPage() {
                   </Button>
                 </DialogFooter>
               </DialogContent>
-            </Dialog>
-          </div>
+            </Dialog>)}
+        </div>
 
           {/* Mobile Menu Button */}
           <button onClick={() => setOpen(!open)} className="sm:hidden rounded-xl border p-2 border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-black/40 backdrop-blur">
@@ -145,28 +138,32 @@ export default function BubbleLandingPage() {
                 <Button variant="ghost">Features</Button>
                 <Button variant="ghost">Community</Button>
 
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className="rounded-2xl w-full">Login</Button>
-                  </DialogTrigger>
+                {session ? (
+                  <Button variant="outline" className="rounded-2xl w-full" onClick={() => signOut()}>
+                    Logout
+                  </Button>) : (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button className="rounded-2xl w-full">Login</Button>
+                    </DialogTrigger>
 
-                  <DialogContent className="rounded-2xl">
-                    <DialogHeader>
-                      <DialogTitle>Login or Signup</DialogTitle>
-                      <DialogDescription>
-                        Welcome to BubbleChat
-                      </DialogDescription>
-                    </DialogHeader>
+                    <DialogContent className="rounded-2xl">
+                      <DialogHeader>
+                        <DialogTitle>Login or Signup</DialogTitle>
+                        <DialogDescription>
+                          Welcome to BubbleChat
+                        </DialogDescription>
+                      </DialogHeader>
 
-                    <DialogFooter>
-                      <Button className="w-full rounded-2xl" onClick={() => signIn("google")}>
-                        <GoogleIcon/>
-                        Continue with Google
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
+                      <DialogFooter>
+                        <Button className="w-full rounded-2xl" onClick={() => signIn("google")}>
+                          <GoogleIcon />
+                          Continue with Google
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>)}
+            </div>
             </motion.div>
           )}
         </AnimatePresence>
