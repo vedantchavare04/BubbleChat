@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, MessageCircle } from "lucide-react"
 import Navbar from "@/components/core_ui/navbar"
+import { useRouter } from "next/navigation"
 
 const CHAT_ROOMS = [
   {
@@ -45,6 +46,7 @@ const CHAT_ROOMS = [
 ]
 
 export default function ChatRoomsPage() {
+  const router = useRouter()
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* background laytout*/}
@@ -98,9 +100,10 @@ export default function ChatRoomsPage() {
                       <span>{room.members} online</span>
                     </div>
 
-                    <Button size="sm" className="rounded-xl px-4">
+                    <Button size="sm" className="rounded-xl px-4" onClick={() => router.push(`/chatrooms/rooms/${room.id}`)}>
                       Join Room
                     </Button>
+
                   </div>
                 </CardContent>
               </Card>

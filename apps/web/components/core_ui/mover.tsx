@@ -45,6 +45,10 @@ const reviews = [
 const firstRow = reviews.slice(0, reviews.length / 2)
 const secondRow = reviews.slice(reviews.length / 2)
 
+function MarqueeSpacer() {
+  return <div className="w-2 shrink-1" />
+}
+
 function ReviewCard({
   img,
   name,
@@ -58,20 +62,10 @@ function ReviewCard({
 }) {
   return (
     <figure
-      className={cn(
-        "relative w-64 shrink-0 cursor-pointer overflow-hidden rounded-2xl border p-4",
-        "border-zinc-200 bg-white/80 hover:bg-white dark:border-zinc-800 dark:bg-neutral-900/70 dark:hover:bg-neutral-900",
-        "backdrop-blur-md transition-colors"
-      )}
-    >
+      className={cn( "relative w-64 shrink-0 cursor-pointer overflow-hidden rounded-2xl border p-4", "border-zinc-200 bg-white/80 hover:bg-white dark:border-zinc-800 dark:bg-neutral-900/70 dark:hover:bg-neutral-900", "backdrop-blur-md transition-colors"
+      )} >
       <div className="flex items-center gap-2">
-        <img
-          src={img}
-          alt={name}
-          width={32}
-          height={32}
-          className="rounded-full"
-        />
+        <img src={img} alt={name} width={32} height={32} className="rounded-full" />
         <div className="flex flex-col">
           <figcaption className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
             {name}
@@ -96,24 +90,20 @@ export default function MarqueeDemo() {
         <div className="relative flex flex-col gap-6 overflow-hidden rounded-3xl border border-zinc-200 bg-white/60 dark:border-zinc-800 dark:bg-neutral-900/60 backdrop-blur-xl py-12">
 
           {/* Row 1 */}
-          <Marquee
-            pauseOnHover
-            className="[--duration:28s] [--gap:1.25rem]"
-          >
+          <Marquee pauseOnHover className="[--duration:28s] [--gap:1.25rem]">
             {firstRow.map((review) => (
               <ReviewCard key={review.username} {...review} />
             ))}
+            <MarqueeSpacer />
+
           </Marquee>
 
           {/* Row 2 */}
-          <Marquee
-            reverse
-            pauseOnHover
-            className="[--duration:28s] [--gap:1.25rem]"
-          >
+          <Marquee reverse pauseOnHover className="[--duration:28s] [--gap:1.25rem]">
             {secondRow.map((review) => (
               <ReviewCard key={review.username} {...review} />
             ))}
+            <MarqueeSpacer />
           </Marquee>
 
           {/* Left fade */}
