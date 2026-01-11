@@ -24,11 +24,10 @@ export default function RoomPage() {
   ])
 
   if (!roomsId) {
-  return (
-    <Loader />
-  )
-}
-
+    return (
+      <Loader />
+    )
+  }
 
   function sendMessage() {
     if (!message.trim()) return
