@@ -2,7 +2,6 @@ import { WebSocketServer } from "ws";
 
 const wss = new WebSocketServer({ port: 5173 });
 
-// roomId -> Set of clientIds
 const rooms = new Map<string, Set<string>>();
 
 function broadcastToAll(data: any) {
@@ -31,11 +30,10 @@ wss.on("connection", (ws) => {
   };
 
   sendAllCounts(); 
-  
+
   ws.on("message", (raw) => {
     const data = JSON.parse(raw.toString());
 
-    // ----- JOIN ROOM -----
     if (data.type === "join") {
       const { roomId, clientId } = data.payload;
 
@@ -48,7 +46,6 @@ wss.on("connection", (ws) => {
 
       rooms.get(roomId)!.add(clientId);
 
-      // broadcast updated count
       broadcastToAll({
         type: "user_count",
         payload: {
@@ -60,13 +57,11 @@ wss.on("connection", (ws) => {
       return;
     }
 
-    // ----- CHAT MESSAGE -----
     if (data.type === "chat") {
       broadcastToAll(data);
     }
   });
 
-  // ----- DISCONNECT -----
   ws.on("close", () => {
     if (currentRoom && currentClient && rooms.has(currentRoom)) {
       rooms.get(currentRoom)!.delete(currentClient);

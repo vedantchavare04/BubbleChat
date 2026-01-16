@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
   async jwt({ token, user }) {
     if (user?.email) {
-      // just store info in token — NO PRISMA HERE
+
       token.email = user.email;
       token.name = user.name;
     }

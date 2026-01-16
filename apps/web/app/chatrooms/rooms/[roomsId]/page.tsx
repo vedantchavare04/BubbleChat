@@ -1,5 +1,4 @@
 "use client";
-
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -120,7 +119,7 @@ export default function RoomPage() {
   return (
     <div className="relative min-h-screen bg-background">
 
-      {/* ===== BACKGROUND LAYOUT (RESTORED) ===== */}
+      {/* background layout */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-neutral-50 dark:bg-neutral-900" />
 
@@ -137,8 +136,8 @@ export default function RoomPage() {
         <div className="absolute -bottom-64 -right-64 h-[36rem] w-[36rem] rounded-full bg-sky-400/12 blur-[160px]" />
       </div>
 
-      {/* ===== HEADER ===== */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-background/60 border-b relative">
+      {/* header */}
+      <div className="top-0 z-20 backdrop-blur-md bg-background/60 border-b relative">
         <div className="max-w-[1400px] mx-auto px-4 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-semibold capitalize">
@@ -153,7 +152,6 @@ export default function RoomPage() {
         </div>
       </div>
 
-      {/* ===== CHAT PANEL ===== */}
       <div className="relative z-10 max-w-[1400px] mx-auto px-2 py-6">
         <div
           className={cn(
@@ -162,7 +160,7 @@ export default function RoomPage() {
           )}
         >
 
-          {/* MESSAGES */}
+          {/* messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-3">
             {messages.map((msg) => (
               <motion.div
@@ -179,10 +177,9 @@ export default function RoomPage() {
                   className={cn(
                     "max-w-[70%] rounded-2xl border shadow-sm",
                     msg.mine
-                      ? "bg-emerald-500 text-white border-emerald-600 rounded-br-md"
+                      ? "bg-emerald-400 text-white border-emerald-400 rounded-br-md"
                       : "bg-card/80 backdrop-blur border-border rounded-bl-md"
-                  )}
-                >
+                  )}>
                   <CardContent className="px-4 py-3.5 space-y-1">
                     <div className="flex items-center justify-between gap-3 text-xs">
                       <span
@@ -191,8 +188,7 @@ export default function RoomPage() {
                           msg.mine
                             ? "text-white/90"
                             : "text-muted-foreground"
-                        )}
-                      >
+                        )}>
                         {msg.user}
                       </span>
 
@@ -202,8 +198,7 @@ export default function RoomPage() {
                           msg.mine
                             ? "text-white/70"
                             : "text-muted-foreground/70"
-                        )}
-                      >
+                        )}>
                         {msg.timestamp}
                       </span>
                     </div>
@@ -212,8 +207,7 @@ export default function RoomPage() {
                       className={cn(
                         "text-sm leading-relaxed",
                         msg.mine ? "text-white" : "text-foreground"
-                      )}
-                    >
+                      )}>
                       {msg.text}
                     </p>
                   </CardContent>
@@ -222,7 +216,7 @@ export default function RoomPage() {
             ))}
           </div>
 
-          {/* INPUT */}
+          {/* input */}
           <div className="border-t px-6 py-4 flex gap-2">
             <Input
               value={message}
