@@ -1,6 +1,6 @@
-import type { NextAuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import { prisma } from "@repo/db"
+import type { NextAuthOptions } from "next-auth";
+import { prisma } from "@repo/db";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -15,23 +15,27 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async signIn({ user }) {
-      if (!user.email) return false
-
-      await prisma.user.upsert({
-        where: {
-          email: user.email,
-        },
-        update: {},
-        create: {
-          email: user.email,
-          name: user.name ?? user.email.split("@")[0],
-        },
-      })
-
-      return true
-    },
+  async jwt({ token, user }) {
+    if (user?.email) {
+      // just store info in token — NO PRISMA HERE
+      token.email = user.email;
+      token.name = user.name;
+    }
+    return token;
   },
 
+  async session({ session, token }) {
+    if (token?.email) {
+      session.user = {
+        ...session.user,
+        email: token.email as string,
+        name: token.name as string,
+      };
+    }
+    return session;
+  },
+},
+
+
   secret: process.env.NEXTAUTH_SECRET,
-}
+};
