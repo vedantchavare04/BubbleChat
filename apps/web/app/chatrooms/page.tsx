@@ -23,7 +23,7 @@ export default function ChatRoomsPage() {
   const [counts, setCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:5173");
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL);
     wsRef.current = ws;
 
     ws.onmessage = (event) => {
