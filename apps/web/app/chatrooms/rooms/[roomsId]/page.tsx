@@ -26,9 +26,11 @@ export default function RoomPage() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [onlineCount, setOnlineCount] = useState(0);
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
 
   const wsRef = useRef<WebSocket | null>(null);
   const clientId = useRef<string>(crypto.randomUUID());
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const username =
     session?.user?.name ??
@@ -58,23 +60,39 @@ export default function RoomPage() {
         return;
       }
 
-      const payload = data.payload;
+      if (data.type === "typing") {
+        const { user, clientId: senderId, isTyping } = data.payload;
 
-      if (payload.clientId === clientId.current) return;
+        if (senderId === clientId.current) return;
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          text: payload.message,
-          user: payload.user || "Anonymous",
-          mine: false,
-          timestamp: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
+        setTypingUsers((prev) =>
+          isTyping
+            ? Array.from(new Set([...prev, user]))
+            : prev.filter((u) => u !== user)
+        );
+
+        return;
+      }
+
+      if (data.type === "chat") {
+        const payload = data.payload;
+
+        if (payload.clientId === clientId.current) return;
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: crypto.randomUUID(),
+            text: payload.message,
+            user: payload.user || "Anonymous",
+            mine: false,
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          },
+        ]);
+      }
     };
 
     return () => {
@@ -84,20 +102,36 @@ export default function RoomPage() {
 
   if (!roomsId) return <Loader />;
 
+  function sendTyping(isTyping: boolean) {
+    wsRef.current?.send(
+      JSON.stringify({
+        type: "typing",
+        payload: {
+          roomId: roomsId,
+          user: username,
+          clientId: clientId.current,
+          isTyping,
+        },
+      })
+    );
+  }
+
   function sendMessage() {
     if (!message.trim()) return;
 
-    const payload = {
-      type: "chat",
-      payload: {
-        roomId: roomsId,
-        message,
-        user: username,
-        clientId: clientId.current,
-      },
-    };
+    sendTyping(false);
 
-    wsRef.current?.send(JSON.stringify(payload));
+    wsRef.current?.send(
+      JSON.stringify({
+        type: "chat",
+        payload: {
+          roomId: roomsId,
+          message,
+          user: username,
+          clientId: clientId.current,
+        },
+      })
+    );
 
     setMessages((prev) => [
       ...prev,
@@ -118,25 +152,6 @@ export default function RoomPage() {
 
   return (
     <div className="relative min-h-screen bg-background">
-
-      {/* background layout */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-neutral-50 dark:bg-neutral-900" />
-
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `linear-gradient(to right,rgba(120,120,120,0.06) 1px,transparent 1px),
-                              linear-gradient(to bottom, rgba(120,120,120,0.06) 1px, transparent 1px)`,
-            backgroundSize: "72px 72px",
-          }}
-        />
-
-        <div className="absolute -top-64 -left-64 h-[36rem] w-[36rem] rounded-full bg-emerald-400/12 blur-[160px]" />
-        <div className="absolute -bottom-64 -right-64 h-[36rem] w-[36rem] rounded-full bg-sky-400/12 blur-[160px]" />
-      </div>
-
-      {/* header */}
       <div className="top-0 z-20 backdrop-blur-md bg-background/60 border-b relative">
         <div className="max-w-[1400px] mx-auto px-4 py-4 flex items-center justify-between">
           <div>
@@ -159,8 +174,6 @@ export default function RoomPage() {
             "flex flex-col h-[calc(100vh-8rem)]"
           )}
         >
-
-          {/* messages */}
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-3">
             {messages.map((msg) => (
               <motion.div
@@ -179,48 +192,46 @@ export default function RoomPage() {
                     msg.mine
                       ? "bg-emerald-400 text-white border-emerald-400 rounded-br-md"
                       : "bg-card/80 backdrop-blur border-border rounded-bl-md"
-                  )}>
+                  )}
+                >
                   <CardContent className="px-4 py-3.5 space-y-1">
                     <div className="flex items-center justify-between gap-3 text-xs">
-                      <span
-                        className={cn(
-                          "font-medium",
-                          msg.mine
-                            ? "text-white/90"
-                            : "text-muted-foreground"
-                        )}>
-                        {msg.user}
-                      </span>
-
-                      <span
-                        className={cn(
-                          "text-[10px]",
-                          msg.mine
-                            ? "text-white/70"
-                            : "text-muted-foreground/70"
-                        )}>
+                      <span className="font-medium">{msg.user}</span>
+                      <span className="text-[10px] opacity-70">
                         {msg.timestamp}
                       </span>
                     </div>
-
-                    <p
-                      className={cn(
-                        "text-sm leading-relaxed",
-                        msg.mine ? "text-white" : "text-foreground"
-                      )}>
-                      {msg.text}
-                    </p>
+                    <p className="text-sm leading-relaxed">{msg.text}</p>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </div>
 
-          {/* input */}
+          {typingUsers.length > 0 && (
+            <div className="px-6 pb-2 text-xs text-muted-foreground">
+              {typingUsers.length === 1
+                ? `${typingUsers[0]} is typing…`
+                : "Someone is typing…"}
+            </div>
+          )}
+
           <div className="border-t px-6 py-4 flex gap-2">
             <Input
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+
+                sendTyping(true);
+
+                if (typingTimeout.current) {
+                  clearTimeout(typingTimeout.current);
+                }
+
+                typingTimeout.current = setTimeout(() => {
+                  sendTyping(false);
+                }, 1000);
+              }}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Type something calm…"
             />

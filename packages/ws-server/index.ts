@@ -15,7 +15,7 @@ wss.on("connection", (ws) => {
   let currentRoom: string | null = null;
   let currentClient: string | null = null;
 
-     const sendAllCounts = () => {
+  const sendAllCounts = () => {
     rooms.forEach((set, roomId) => {
       ws.send(
         JSON.stringify({
@@ -29,7 +29,7 @@ wss.on("connection", (ws) => {
     });
   };
 
-  sendAllCounts(); 
+  sendAllCounts();
 
   ws.on("message", (raw) => {
     const data = JSON.parse(raw.toString());
@@ -59,6 +59,15 @@ wss.on("connection", (ws) => {
 
     if (data.type === "chat") {
       broadcastToAll(data);
+      return;
+    }
+
+    if (data.type === "typing") {
+      broadcastToAll({
+        type: "typing",
+        payload: data.payload,
+      });
+      return;
     }
   });
 
