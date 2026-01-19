@@ -41,7 +41,7 @@ export default function BubbleLandingPage() {
 
               <Button variant="outline" size="lg" className="rounded-2xl">
                 <Sparkles className="mr-2 h-4 w-4"/>
-                Click on features tab and get started
+                Login to get Username
               </Button>
             </div>
           </div>
