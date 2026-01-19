@@ -19,7 +19,7 @@ export default function ChatRoomsPage() {
     // roomId -> live count
     const [counts, setCounts] = useState({});
     useEffect(() => {
-        const ws = new WebSocket("ws://localhost:5173");
+        const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL);
         wsRef.current = ws;
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);

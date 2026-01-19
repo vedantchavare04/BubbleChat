@@ -26,7 +26,7 @@ export default function RoomPage() {
     useEffect(() => {
         if (!roomsId)
             return;
-        const ws = new WebSocket("ws://localhost:5173");
+        const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL);
         wsRef.current = ws;
         ws.onopen = () => {
             ws.send(JSON.stringify({
