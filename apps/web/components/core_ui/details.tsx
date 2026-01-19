@@ -55,7 +55,7 @@ function FeaturesCarousel() {
                     </p>
 
                     <p className="text-sm text-muted-foreground text-center">
-                      Smooth animations • Cozy vibes • Soft gradients
+                      Friendly Chats • Cozy rooms • Connect Insantly
                     </p>
 
                   </CardContent>

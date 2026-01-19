@@ -23,7 +23,7 @@ export function Card_1(){
                     Hey — welcome to BubbleChat ✨
                   </div>
                   <div className="p-3 rounded-2xl bg-sky-100/70 dark:bg-sky-900/40 w-max ml-auto shadow">
-                    Let’s keep it chill 🌿
+                    Don't forget to login!
                   </div>
                 </div>
               </CardContent>
@@ -49,7 +49,7 @@ export function Card_2(){
                         <CardContent className="p-6">
                           <h3 className="font-bold text-xl mb-2">{label}</h3>
                           <p className="text-zinc-600 dark:text-zinc-400">
-                            Soft pastel UI designed to feel warm, calm, and welcoming to everyone.
+                            Cozy chatrooms for every type of discussions,click on features tab and get started.
                           </p>
                         </CardContent>
                       </Card>

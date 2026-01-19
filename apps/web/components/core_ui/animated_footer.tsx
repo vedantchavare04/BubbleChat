@@ -60,7 +60,7 @@ export default function Footer() {
 
           {/* bottom */}
           <div className="pt-6 text-xs text-zinc-500 dark:text-zinc-500">
-            © {new Date().getFullYear()} BubbleChat. All rights reserved.
+            © {new Date().getFullYear()} Made with ❤️.
           </div>
         </div>
       </div>
