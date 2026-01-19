@@ -12,10 +12,9 @@ import Seperator from "../components/core_ui/seperator"
 import BackgroundLayout from "../components/core_ui/background"
 import Navbar from "../components/core_ui/navbar"
 import {Card_1,Card_2} from "../components/core_ui/motion"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export default function BubbleLandingPage() {
-  const router = useRouter()
 
   return (
     <div className="min-h-screen w-full">
@@ -39,9 +38,11 @@ export default function BubbleLandingPage() {
             </p>
 
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-              <Button size="lg" className="rounded-2xl" onClick={() => {router.push("/chatrooms")}}>
+              <Button size="lg" className="rounded-2xl">
+                <Link href="/chatrooms">
                 <Send className="mr-2 h-4 w-4" />
                 Get Started with BubbleChat
+                </Link>
               </Button>
 
               <Button variant="outline" size="lg" className="rounded-2xl">
