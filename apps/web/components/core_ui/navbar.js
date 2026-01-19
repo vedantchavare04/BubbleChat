@@ -141,7 +141,7 @@ export default function Navbar() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="w-full justify-start">
+                  <Button variant="ghost" className="w-full justify-center">
                     Features
                   </Button>
                 </DropdownMenuTrigger>
