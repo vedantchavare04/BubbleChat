@@ -1,0 +1,35 @@
+name: Deploy Project
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build static export
+        run: bun run build
+
+      - name: Upload build
+        run: |
+          DEPLOYMENT_ID=$(uuidgen)
+
+          for file in $(find apps/web/out -type f); do
+            REL_PATH=${file#apps/web/out/}
+
+            curl -X POST https://scalone.vedantchavare04.workers.dev/upload \
+              -F "file=@$file" \
+              -F "path=$REL_PATH" \
+              -F "deploymentId=$DEPLOYMENT_ID"
+          done
