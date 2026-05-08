@@ -131,7 +131,7 @@ jobs:
 
       - name: Upload build
         run: |
-          DEPLOYMENT_ID="847b9464-bb66-4f37-8c75-bd376bccf514"
+          DEPLOYMENT_ID="88dbc982-600f-44a1-99d3-884b522f0a75"
 
           BUILD_DIR=""
           for dir in "apps/web/out" "apps/web/dist" "apps/web/build" "out" "dist" "build"; do
