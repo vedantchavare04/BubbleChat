@@ -14,76 +14,145 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Detect project type
+        id: detect
+        run: |
+          if [ -f "turbo.json" ]; then
+            echo "type=turborepo" >> $GITHUB_OUTPUT
+          elif [ -f "next.config.js" ] || [ -f "next.config.ts" ] || [ -f "next.config.mjs" ]; then
+            echo "type=nextjs" >> $GITHUB_OUTPUT
+          elif [ -f "vite.config.js" ] || [ -f "vite.config.ts" ]; then
+            echo "type=vite" >> $GITHUB_OUTPUT
+          elif [ -f "package.json" ]; then
+            echo "type=node" >> $GITHUB_OUTPUT
+          else
+            echo "type=static" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
 
-      - name: Set homepage for relative asset paths
+      - name: Set homepage for CRA projects
         run: |
           if [ -f "package.json" ]; then
+            PROJECT_TYPE=$(cat package.json | python3 -c "import sys,json; d=json.load(sys.stdin); deps={**d.get('dependencies',{}),**d.get('devDependencies',{})}; print('cra' if 'react-scripts' in deps else 'other')")
+            if [ "$PROJECT_TYPE" = "cra" ]; then
+              node -e "
+                const fs = require('fs');
+                const pkg = JSON.parse(fs.readFileSync('package.json'));
+                pkg.homepage = '.';
+                fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+                console.log('Set homepage to . for CRA');
+              "
+            fi
+          fi
+
+      - name: Configure Next.js for static export
+        if: steps.detect.outputs.type == 'nextjs'
+        run: |
+          CONFIG_FILE=""
+          if [ -f "next.config.ts" ]; then CONFIG_FILE="next.config.ts"
+          elif [ -f "next.config.mjs" ]; then CONFIG_FILE="next.config.mjs"
+          elif [ -f "next.config.js" ]; then CONFIG_FILE="next.config.js"
+          fi
+
+          if [ -n "$CONFIG_FILE" ]; then
+            echo "Patching $CONFIG_FILE for static export..."
             node -e "
               const fs = require('fs');
-              const pkg = JSON.parse(fs.readFileSync('package.json'));
-              pkg.homepage = '.';
-              fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
-              console.log('Set homepage to . for relative paths');
+              let content = fs.readFileSync('$CONFIG_FILE', 'utf8');
+              if (!content.includes('output')) {
+                content = content.replace(
+                  /const nextConfig[^=]*=s*{/,
+                  'const nextConfig = { output: "export", trailingSlash: true,'
+                );
+                fs.writeFileSync('$CONFIG_FILE', content);
+                console.log('Patched next.config');
+              } else {
+                console.log('next.config already has output set');
+              }
             "
           fi
 
       - name: Install dependencies
-        run: bun install
+        run: |
+          if [ -f "bun.lockb" ] || [ -f "bun.lock" ]; then
+            bun install
+          elif [ -f "yarn.lock" ]; then
+            yarn install --frozen-lockfile
+          elif [ -f "pnpm-lock.yaml" ]; then
+            npm install -g pnpm && pnpm install
+          else
+            npm install
+          fi
 
-      - name: Build static export
-        run: bun run build
+      - name: Build project
+        run: |
+          if [ -f "bun.lockb" ] || [ -f "bun.lock" ]; then
+            bun run build
+          elif [ -f "yarn.lock" ]; then
+            yarn build
+          elif [ -f "pnpm-lock.yaml" ]; then
+            pnpm build
+          else
+            npm run build
+          fi
         env:
           CI: false
+          NODE_ENV: production
 
       - name: Fix asset paths to be relative
         run: |
           BUILD_DIR=""
-          if [ -d "apps/web/out" ]; then BUILD_DIR="apps/web/out"
-          elif [ -d "apps/web/.next" ]; then BUILD_DIR="apps/web/.next"
-          elif [ -d "out" ]; then BUILD_DIR="out"
-          elif [ -d "build" ]; then BUILD_DIR="build"
-          elif [ -d "dist" ]; then BUILD_DIR="dist"
-          else echo "No build output directory found!"; exit 1; fi
+          for dir in "apps/web/out" "apps/web/dist" "apps/web/build" "out" "dist" "build" ".next/static"; do
+            if [ -d "$dir" ]; then BUILD_DIR="$dir"; break; fi
+          done
 
-          echo "Fixing asset paths in $BUILD_DIR/index.html"
-          sed -i 's|href="/|href="./|g' $BUILD_DIR/index.html
-          sed -i 's|src="/|src="./|g' $BUILD_DIR/index.html
-          echo "Done fixing paths"
-
-      - name: Upload build
-        run: |
-          DEPLOYMENT_ID="${{ github.event.inputs.deployment_id }}"
-
-          BUILD_DIR=""
-          if [ -d "apps/web/out" ]; then
-            BUILD_DIR="apps/web/out"
-          elif [ -d "apps/web/.next" ]; then
-            BUILD_DIR="apps/web/.next"
-          elif [ -d "out" ]; then
-            BUILD_DIR="out"
-          elif [ -d "build" ]; then
-            BUILD_DIR="build"
-          elif [ -d "dist" ]; then
-            BUILD_DIR="dist"
-          else
+          if [ -z "$BUILD_DIR" ]; then
             echo "No build output directory found!"
+            find . -name "index.html" -not -path "*/node_modules/*" -not -path "*/.git/*"
             exit 1
           fi
 
           echo "Using build dir: $BUILD_DIR"
 
-          for file in $(find $BUILD_DIR -type f); do
-            REL_PATH=${file#$BUILD_DIR/}
+          if [ -f "$BUILD_DIR/index.html" ]; then
+            sed -i 's|href="/|href="./|g' "$BUILD_DIR/index.html"
+            sed -i 's|src="/|src="./|g' "$BUILD_DIR/index.html"
+            echo "Fixed paths in index.html"
+          fi
 
-            curl -X POST https://scalone.vedantchavare04.workers.dev/upload \
+      - name: Upload build
+        run: |
+          DEPLOYMENT_ID="847b9464-bb66-4f37-8c75-bd376bccf514"
+
+          BUILD_DIR=""
+          for dir in "apps/web/out" "apps/web/dist" "apps/web/build" "out" "dist" "build"; do
+            if [ -d "$dir" ]; then BUILD_DIR="$dir"; break; fi
+          done
+
+          if [ -z "$BUILD_DIR" ]; then
+            echo "No build output directory found!"
+            exit 1
+          fi
+
+          echo "Uploading from: $BUILD_DIR"
+
+          find "$BUILD_DIR" -type f | while read file; do
+            REL_PATH="${file#$BUILD_DIR/}"
+            echo "Uploading: $REL_PATH"
+            curl -s -X POST https://scalone.vedantchavare04.workers.dev/upload \
               -F "file=@$file" \
               -F "path=$REL_PATH" \
               -F "deploymentId=$DEPLOYMENT_ID"
           done
 
-          echo "Deployment ID: $DEPLOYMENT_ID"
+          echo "✅ Deployment complete!"
           echo "URL: https://scalone.vedantchavare04.workers.dev/deployments/$DEPLOYMENT_ID/index.html"
